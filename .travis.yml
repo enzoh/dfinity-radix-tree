@@ -1,0 +1,10 @@
+language: haskell
+
+addons:
+  apt:
+    packages:
+    - libleveldb-dev
+
+ghc:
+  - 8.2
+  - 8.4
