@@ -21,9 +21,9 @@ import Control.Monad.Identity
 import Control.Monad.IO.Class
 import Control.Monad.State.Strict
 import Data.Aeson
+import Data.Aeson.KeyMap          as KeyMap
 import Data.ByteString.Base16     as Base16
 import Data.ByteString.Char8      as Strict
-import Data.HashMap.Strict        as HashMap
 import Data.Map                   as Map
 import Data.Text                  as Text
 import Data.Text.Encoding
@@ -51,7 +51,7 @@ instance Show Op where
 
 parse :: Object -> Maybe Op
 parse obj = do
-  op <- HashMap.lookup "op" obj
+  op <- KeyMap.lookup "op" obj
   case op of
     "set" -> do
       key <- view obj "key"
@@ -69,11 +69,11 @@ parse obj = do
       pure $ Merkleize val
     _ -> Nothing
 
-view :: Object -> Text -> Maybe ByteString
+view :: Object -> Key -> Maybe ByteString
 view obj key = do
-  val <- HashMap.lookup key obj
+  val <- KeyMap.lookup key obj
   case val of
-    String text -> Just $ fst $ Base16.decode $ encodeUtf8 $ Text.drop 2 text
+    String text -> Just $ either error id $ Base16.decode $ encodeUtf8 $ Text.drop 2 text
     _           -> Nothing
 
 newtype MapDB m a

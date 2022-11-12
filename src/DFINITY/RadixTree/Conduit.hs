@@ -35,7 +35,6 @@ import Control.Monad.IO.Class
 import Control.Monad.Trans.Resource
 import Data.ByteArray
 import Data.ByteString                  as Strict
-import Data.ByteString.Lazy
 import Data.ByteString.Short
 import Data.Conduit                     as Conduit
 import Data.HashTable.IO                as Cuckoo
@@ -61,7 +60,8 @@ import DFINITY.RadixTree.Utilities
 -- Create a conduit from a radix tree.
 sourceRadixTree
   :: forall m database
-   . MonadResource m
+   . MonadFail m
+  => MonadResource m
   => RadixDatabase (ConduitT () Strict.ByteString m) database
   => [Bool]
   -- ^ Bitmask.
@@ -124,7 +124,8 @@ sourceRadixTree bitmask cacheSize chan tree radixLock
 -- Create a radix tree from a conduit.
 sinkRadixTree
   :: forall m database
-   . MonadResource m
+   . MonadFail m
+  => MonadResource m
   => RadixDatabase (ConduitT Strict.ByteString Void m) database
   => RadixRoot
   -- ^ Target state root.
