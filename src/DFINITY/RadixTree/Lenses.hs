@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE NamedFieldPuns #-}
 
 {-# OPTIONS -Wall                   #-}
 {-# OPTIONS -Wno-missing-signatures #-}
@@ -36,22 +36,17 @@ import Data.Bool
 import Data.ByteString
 import Data.List.NonEmpty
 import Data.Word
-import Lens.Simple
 
 import DFINITY.RadixTree.Types
 
-makeLenses ''RadixNode
-makeLenses ''RadixProof
-makeLenses ''RadixTree
-
 getPrefix :: RadixNode -> Maybe RadixPrefix
-getPrefix = view radixPrefix
+getPrefix RadixNode {_radixPrefix} = _radixPrefix
 
 getLeft :: RadixNode -> Maybe RadixRoot
-getLeft = view radixLeft
+getLeft RadixNode {_radixLeft} = _radixLeft
 
 getRight :: RadixNode -> Maybe RadixRoot
-getRight = view radixRight
+getRight RadixNode {_radixRight} = _radixRight
 
 getChild :: Bool -> RadixNode -> Maybe RadixRoot
 getChild = bool getLeft getRight
@@ -60,37 +55,37 @@ getChildren :: RadixNode -> (Maybe RadixRoot, Maybe RadixRoot)
 getChildren node = (getLeft node, getRight node)
 
 getLeaf :: RadixNode -> Maybe ByteString
-getLeaf = view radixLeaf
+getLeaf RadixNode {_radixLeaf} = _radixLeaf
 
 getPath :: RadixProof -> NonEmpty RadixNode
-getPath = view radixPath
+getPath RadixProof {_radixPath} = _radixPath
 
 getValue :: RadixProof -> ByteString
-getValue = view radixValue
+getValue RadixProof {_radixValue} = _radixValue
 
 getBuffer :: RadixTree database -> RadixBuffer
-getBuffer = view radixBuffer
+getBuffer RadixTree {_radixBuffer} = _radixBuffer
 
 getCache :: RadixTree database -> RadixCache
-getCache = view radixCache
+getCache RadixTree {_radixCache} = _radixCache
 
 getCheckpoint :: RadixTree database -> RadixRoot
-getCheckpoint = view radixCheckpoint
+getCheckpoint RadixTree {_radixCheckpoint} = _radixCheckpoint
 
 getNonce :: RadixTree database -> Word32
-getNonce = view radixNonce
+getNonce RadixTree {_radixNonce} = _radixNonce
 
 getRoot :: RadixTree database -> RadixRoot
-getRoot = view radixRoot
+getRoot RadixTree {_radixRoot} = _radixRoot
 
 setPrefix :: Maybe RadixPrefix -> RadixNode -> RadixNode
-setPrefix = set radixPrefix
+setPrefix prefix node = node {_radixPrefix = prefix}
 
 setLeft :: Maybe RadixRoot -> RadixNode -> RadixNode
-setLeft = set radixLeft
+setLeft left node = node {_radixLeft = left}
 
 setRight :: Maybe RadixRoot -> RadixNode -> RadixNode
-setRight = set radixRight
+setRight right node = node {_radixRight = right}
 
 setChild :: Bool -> Maybe RadixRoot -> RadixNode -> RadixNode
 setChild = bool setLeft setRight
@@ -99,25 +94,26 @@ setChildren :: (Maybe RadixRoot, Maybe RadixRoot) -> RadixNode -> RadixNode
 setChildren (left, right) = setLeft left . setRight right
 
 setLeaf :: Maybe ByteString -> RadixNode -> RadixNode
-setLeaf = set radixLeaf
+setLeaf leaf node = node {_radixLeaf = leaf}
 
 setPath :: NonEmpty RadixNode -> RadixProof -> RadixProof
-setPath = set radixPath
+setPath path proof = proof {_radixPath = path}
 
 setValue :: ByteString -> RadixProof -> RadixProof
-setValue = set radixValue
+setValue value proof = proof {_radixValue = value}
 
 setBuffer :: RadixBuffer -> RadixTree database -> RadixTree database
-setBuffer = set radixBuffer
+setBuffer buffer tree = tree {_radixBuffer = buffer}
 
 setCache :: RadixCache -> RadixTree database -> RadixTree database
-setCache = set radixCache
+setCache cache tree = tree {_radixCache = cache}
 
 setCheckpoint :: RadixRoot -> RadixTree database -> RadixTree database
-setCheckpoint = set radixCheckpoint
+setCheckpoint checkpoint tree = tree {_radixCheckpoint = checkpoint}
 
 setNonce :: Word32 -> RadixTree database -> RadixTree database
-setNonce = set radixNonce
+setNonce nonce tree = tree {_radixNonce = nonce}
 
 setRoot :: RadixRoot -> RadixTree database -> RadixTree database
-setRoot = set radixRoot
+setRoot root tree = tree {_radixRoot = root}
+

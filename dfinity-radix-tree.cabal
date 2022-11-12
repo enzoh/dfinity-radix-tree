@@ -45,7 +45,6 @@ Library
     directory,
     dlist,
     hashtables,
-    lens-simple,
     leveldb-haskell,
     lrucaching,
     memory,
